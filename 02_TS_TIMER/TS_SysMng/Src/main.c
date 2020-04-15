@@ -8,7 +8,7 @@
  * Description              :Timer0 interrupt project and frequency management.
  *                           Timer0 interrupt = 50us.
  *
- * Version                  :
+ * Version                  :0.1
  *
  * Copyright (c) 2020 Tarik SEMRADE
  *
@@ -52,7 +52,7 @@
  *  Globals
  *
  *********************************************************************************/
-Uint32 InteCounter = 0UL;
+
 
 /**********************************************************************************
  * \function:       main
@@ -95,13 +95,13 @@ main (void)
     EDIS;
 
     /************************Peripheral Initialization*****************************/
-    /* Initialize the Device Peripheral. This function can be */
+    /* Initialize all timer with default values */
     InitCpuTimers();
 
     /* 200MHz CPU Freq, 50 uSeconds Period (in uSeconds) */
     ConfigCpuTimer(&CpuTimer0, 200, 50);
 
-    /* Enable TINT0 in the PIE: Group 1 __interrupt 7 */
+    /* Enable TINT0 in the PIE: Group 1 interrupt 7 */
     PieCtrlRegs.PIEIER1.bit.INTx7 = 1;
 
     /* Enable group 1 interrupts */
@@ -116,16 +116,16 @@ main (void)
     /* Start Timer0 */
     StartCpuTimer0();
 
-    /* Infinite led loop */
+    /* Infinite leds loop */
     while (1)
     {
-        if ( 5000U == CpuTimer0.InterruptCount )
+        if ( 5000UL == CpuTimer0.InterruptCount )
         {
             /* Toggle Red Led with 250ms = 5 000 * 50us*/
             GPIO_togglePin(RED_LED);
 
         }
-        if ( 10000U == CpuTimer0.InterruptCount  )
+        if ( 10000UL == CpuTimer0.InterruptCount  )
         {
             /* Toggle Blue Led with 500ms = 10000 * 50us*/
             GPIO_togglePin(BLUE_LED);
@@ -150,7 +150,7 @@ Timer0_ISR (void)
     /* Clear Timer interrupt flag */
     CpuTimer0Regs.TCR.bit.TIF = 0;
 
-    /* Toggle led and increment the timer0 */
+    /* Increment timer0 interrupt counter */
     CpuTimer0.InterruptCount++;
 
     /* Acknowledge this interrupt to receive more interrupts from group 1 */
@@ -167,11 +167,11 @@ void
 GpioLedInit (void)
 {
 
-    /* GPIO bleuLed configuration using TI function */
+    /* GPIO blueLed configuration */
     GPIO_SetupPinMux(BLUE_LED,GPIO_MUX_CPU1,0);
     GPIO_SetupPinOptions(BLUE_LED, GPIO_OUTPUT, GPIO_ASYNC);
 
-    /* GPIO RedLed configuration using TI function */
+    /* GPIO RedLed configuration  */
     GPIO_SetupPinMux(RED_LED,GPIO_MUX_CPU1,0);
     GPIO_SetupPinOptions(RED_LED, GPIO_OUTPUT, GPIO_ASYNC);
 
